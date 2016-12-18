@@ -1,0 +1,22 @@
+[
+  {
+    "action": "talk",
+    "text": "Please wait while we connect you"
+  },
+  {
+    "action": "connect",
+    "eventUrl": [
+      "http://sammachin.ngrok.io/event"
+    ],
+    "from": "447520616161",
+    "endpoint": [
+    {
+      "type": "websocket",
+      "uri": "ws://sammachin.ngrok.io/socket",
+      "content-type": "audio/l16;rate=16000",
+      "headers": {
+        "app": "audiosocket_test"
+        }
+      }
+    ]}
+]
