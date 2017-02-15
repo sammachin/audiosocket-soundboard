@@ -5,17 +5,16 @@
   },
   {
     "action": "connect",
-    "eventUrl": [
-      "http://sammachin.ngrok.io/event"
-    ],
-    "from": "447520616161",
+    "eventUrl": [ "http://{{host}}/event"],
+    "from": "{{cli}}",
     "endpoint": [
     {
       "type": "websocket",
-      "uri": "ws://sammachin.ngrok.io/socket",
+      "uri": "ws://{{host}}/socket",
       "content-type": "audio/l16;rate=16000",
       "headers": {
-        "app": "audiosocket_test"
+        "app": "soundboard",
+        "cli": "{{cli}}"
         }
       }
     ]}

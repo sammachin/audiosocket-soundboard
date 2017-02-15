@@ -7,7 +7,7 @@
 </head>
 <body>
 <header>
-<h1>Call 020 3893 1944 </h1>
+<h1>Call {{lvn}} </h1>
 </header>
 <button onClick="send('english')">English MF</button>
 <button onClick="send('asking')">Asking</button>
@@ -26,7 +26,7 @@ Powered by The <a href="https://nexmo.com" target="_blank">Nexmo</a> Voice API
 var ws
 
 function connect() {
-	ws = new WebSocket("ws://127.0.0.1:8000/browser");
+	ws = new WebSocket("ws://{{host}}/browser");
 	ws.onopen = function() {
 		eventRecieved("CONNECTED");
 	};

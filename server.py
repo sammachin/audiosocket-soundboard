@@ -8,10 +8,12 @@ import time
 
 connections = []
 
+HOST = '' #Hostname where this server is running eg blah.ngrok.io
+LVN = '' #Your Nexmo NUmber Here
 		
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("index.html")		
+        self.render("index.html", lvn=LVN, host=HOST)		
 		
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
@@ -31,11 +33,17 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         print("client disconnected")
 
 class NCCOHandler(tornado.web.RequestHandler):
+    def initialize(self):
+        self._host = HOST
+        self._template = tornado.template.Loader(".").load("ncco.json")
+
     def get(self):
-        with open("ncco.json", 'r') as f:
-            ncco = f.read()
-        self.write(ncco)
+        cli = self.get_argument("from", None)
         self.set_header("Content-Type", 'application/json')
+        self.write(self._template.generate(
+            host=self._host,
+            cli = cli.lstrip("+")
+        ))
         self.finish()
 
 class EventHandler(tornado.web.RequestHandler):
@@ -44,6 +52,7 @@ class EventHandler(tornado.web.RequestHandler):
 		self.write('ok')
 		self.set_header("Content-Type", 'text/plain')
 		self.finish()
+
 	
 class SoundHandler(tornado.websocket.WebSocketHandler):
 	    def open(self):
@@ -58,15 +67,11 @@ class SoundHandler(tornado.websocket.WebSocketHandler):
 				data = f.readframes(320)
 				for c in connections:
 					c.write_message(data, binary=True)
-					time.sleep(0.018)
+					time.sleep(0.018) 
 	    def on_close(self):
 	        print("client disconnected")
-		
-		
-		
-		
-		
-		
+
+
 application = tornado.web.Application([(r'/', MainHandler),
 										(r'/socket', WSHandler),
 										(r'/event', EventHandler),
