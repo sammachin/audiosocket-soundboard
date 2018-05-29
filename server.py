@@ -10,11 +10,11 @@ connections = []
 
 HOST = '' #Hostname where this server is running eg blah.ngrok.io
 LVN = '' #Your Nexmo NUmber Here
-		
+
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("index.html", lvn=LVN, host=HOST)		
-		
+        self.render("index.html", lvn=LVN, host=HOST)
+
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
         print("client connected")
@@ -53,21 +53,25 @@ class EventHandler(tornado.web.RequestHandler):
 		self.set_header("Content-Type", 'text/plain')
 		self.finish()
 
-	
+
 class SoundHandler(tornado.websocket.WebSocketHandler):
 	    def open(self):
 	        print("client connected")
 	    def on_message(self, message):
 			print message
 			data = message
+                        samples = 320
+                        if str.find('rate=8000',data):
+                            samples = 160
+                        print str(samples) + " samples/frame"
 			fn = 'audio/{}.wav'.format(data)
 			f = wave.open(fn)
 			lgth = f.getnframes()
 			while f.tell() < lgth:
-				data = f.readframes(320)
+				data = f.readframes(samples)
 				for c in connections:
 					c.write_message(data, binary=True)
-					time.sleep(0.018) 
+			#	time.sleep(0.018) // not needed anymore
 	    def on_close(self):
 	        print("client disconnected")
 
